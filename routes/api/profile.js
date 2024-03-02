@@ -215,4 +215,25 @@ router.delete(
   }
 );
 
+// Update availability route
+router.post('/update-availability', async (req, res) => {
+  const { profileId, availability } = req.body;
+
+  try {
+    const profile = await Profile.findById(profileId);
+
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    profile.availability = availability;
+    await profile.save();
+
+    return res.status(200).json({ message: 'Availability updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

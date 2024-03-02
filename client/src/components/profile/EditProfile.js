@@ -9,6 +9,12 @@ import {
   getCurrentProfile,
 } from "../../redux/actions/profileActions";
 import { getSubjects } from "../../redux/actions/subjectActions";
+import AvailabilityForm from "./AvailabilityForm"; // Update the path as needed
+import axios from "axios"; // Import axios for making HTTP requests
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -37,11 +43,15 @@ class EditProfile extends Component {
     courses: [],
     subjects: [],
     errors: {},
+    isAvailabilityModalOpen: false,
+    events: [],
+    profileId: null,
   };
 
   componentDidMount() {
     this.props.getCurrentProfile();
     this.props.getSubjects();
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,6 +66,7 @@ class EditProfile extends Component {
         availability: profile.availability,
         type: profile.type,
         courses: courses,
+        events: profile.availability || [],
       });
     }
     if (nextProps.subjects.subjects) {
@@ -120,6 +131,7 @@ class EditProfile extends Component {
 
   onChange = (e) => {
     const name = e.target.name;
+  
     if (
       name.includes("courseId") ||
       name.includes("courseNumber") ||
@@ -129,28 +141,158 @@ class EditProfile extends Component {
       let i = name.charAt(name.length - 1);
       let property = name.substring(0, name.length - 2);
       courses[i][property] = e.target.value;
-
+  
       // if we just set the course ID property, also set the subject name
       if (property === "courseId") {
-        let subject = findFirstMatch(this.state.subjects, [
-          "id",
-          e.target.value,
-        ]);
+        let subject = findFirstMatch(this.state.subjects, ["id", e.target.value]);
         courses[i].courseSubject = subject.name;
       }
-      this.setState({ [courses]: courses });
+      this.setState({ courses: courses });
     } else {
       const { major, minor } = this.state;
-      this.setState({ [e.target.name]: e.target.value });
-      if (e.target.name === "major") {
-        const filtered = filterArrDuplicates(minor, e.target.value);
-        this.setState({ minor: filtered });
-      } else if (e.target.name === "minor") {
-        const filtered = filterArrDuplicates(major, e.target.value);
-        this.setState({ major: filtered });
+  
+      // Check if the change is related to the availability
+      if (name === "availability") {
+        // Assuming availability is a string, update accordingly
+        this.setState({ availability: e.target.value });
+      } else {
+        this.setState({ [name]: e.target.value });
+  
+        if (e.target.name === "major") {
+          const filtered = filterArrDuplicates(minor, e.target.value);
+          this.setState({ minor: filtered });
+        } else if (e.target.name === "minor") {
+          const filtered = filterArrDuplicates(major, e.target.value);
+          this.setState({ major: filtered });
+        }
       }
     }
   };
+  openAvailabilityForm = () => {
+    this.setState({ isAvailabilityModalOpen: true });
+  };
+
+  closeAvailabilityForm = () => {
+    this.setState({ isAvailabilityModalOpen: false });
+  };
+
+  handleAvailabilitySubmit = () => {
+    // Perform validation and handle the submitted availability
+    // For now, let's just close the modal
+
+    // Close the modal
+    this.closeAvailabilityForm();
+
+    // Get the profile ID from your state or props
+    const { profile } = this.props;
+    const profileId = profile.profile._id; // Assuming _id is the field containing the profile ID
+
+    // Transform events array into a format suitable for your backend
+    const { events } = this.state;
+    const availability = events.map(event => ({
+      start: event.start.toISOString(),
+      end: event.end.toISOString(),
+      title: event.title,
+    }));
+
+    // Make a request to update availability
+    axios.post("/api/profile/update-availability", { profileId, availability })
+      .then(response => {
+        console.log(response.data); // Log success message or handle as needed
+      })
+      .catch(error => {
+        console.error(error); // Log or handle the error
+      });
+  };
+
+  handleSlotSelect = ({ start, end }) => {
+    const { events } = this.state;
+  
+    // Convert start and end to Date objects if they are not
+    const startDate = start instanceof Date ? start : new Date(start);
+    const endDate = end instanceof Date ? end : new Date(end);
+  
+    // Check if the selected slot already exists
+    const existingEventIndex = events.findIndex(
+      (event) =>
+        event.start instanceof Date &&
+        event.end instanceof Date &&
+        event.start.getTime() === startDate.getTime() &&
+        event.end.getTime() === endDate.getTime()
+    );
+  
+    if (existingEventIndex !== -1) {
+      // Slot exists, remove it
+      const updatedEvents = [...events];
+      updatedEvents.splice(existingEventIndex, 1);
+  
+      this.setState({
+        events: updatedEvents,
+      });
+    } else {
+      // Slot doesn't exist, add a new event
+      const newEvent = {
+        start: startDate,
+        end: endDate,
+        title: "Available",
+      };
+  
+      this.setState((prevState) => ({
+        events: [...prevState.events, newEvent],
+      }));
+    }
+  };
+  
+
+  handleSaveDates = () => {
+  // Use this.state.events to save or update the selected dates
+  // Make the necessary API calls or update the database
+  // For example, you can send this data to the server using axios
+
+  // Get the profile ID from your state or props
+  const { profile } = this.props;
+  const profileId = profile.profile._id; // Assuming _id is the field containing the profile ID
+
+  // Transform events array into a format suitable for your backend
+  const { events } = this.state;
+  const availability = events.map(event => {
+    // Check if start and end are valid date objects
+    const isValidDate = (date) => date instanceof Date && !isNaN(date);
+
+    return {
+      start: isValidDate(event.start) ? event.start.toISOString() : new Date().toISOString(),
+      end: isValidDate(event.end) ? event.end.toISOString() : new Date().toISOString(),
+      title: event.title,
+    };
+  });
+
+  // Make a request to update availability
+  axios.post("/api/profile/update-availability", { profileId, availability })
+    .then(response => {
+      console.log(response.data); // Log success message or handle as needed
+
+    })
+    .catch(error => {
+      console.error(error); // Log or handle the error
+    });
+};
+
+handleDeselect = (info) => {
+  const { event } = info;
+
+  // Check if the event has an ID (indicating it was loaded)
+  if (event.id) {
+    // If the event has an ID, remove it from the state
+    const updatedEvents = this.state.events.filter((e) => e.id !== event.id);
+
+    this.setState({
+      events: updatedEvents,
+    });
+  } else {
+    // If the event doesn't have an ID, it's a newly added event, so remove it directly
+    event.remove();
+  }
+};
 
   // on cancel go back to dashboard to eliminate need for extra button
   render() {
@@ -162,8 +304,8 @@ class EditProfile extends Component {
       courses,
       subjects,
       type,
+      events,
     } = this.state;
-
     const minors = filterByOptions(subjects, ["isMinor", "Yes"]);
     const majors = filterByOptions(subjects, ["isMajor", "Yes"]);
     const subjectItems = filterByOptions(subjects, ["isCourse", "Yes"]);
@@ -349,7 +491,11 @@ class EditProfile extends Component {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl margin="normal" required fullWidth>
+            {/*<Typography variant="body1">
+              <strong>Availability:</strong> {availability.map(event => `${event.start} to ${event.end}`).join(', ')}
+                </Typography>*/}
+
+              {/*<FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="availability">Availablity</InputLabel>
                 <Input
                   type="text"
@@ -360,9 +506,31 @@ class EditProfile extends Component {
                   fullWidth
                   onChange={this.onChange}
                 />
-              </FormControl>
+                </FormControl>*/}
             </Grid>
           </Grid>
+          {/* FullCalendar for Availability */}
+        <div>
+          <h2>Availability Calendar</h2>
+          <FullCalendar
+  plugins={[dayGridPlugin, interactionPlugin]}
+  initialView="dayGridMonth"
+  events={events}
+  editable={true}
+  eventResizableFromStart={true}
+  selectable={true}
+  selectMirror={true}
+  select={(info) => this.handleSlotSelect(info)}
+/>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={this.handleSaveDates}
+            disabled={this.state.events.length === 0}
+          >
+            Save
+          </Button>
+        </div>
           <Grid container spacing={10}>
             <Grid item xs={12}>
               <div className="courses" />

@@ -17,6 +17,7 @@ const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const courses = require("./routes/api/courses");
 const subjects = require("./routes/api/subjects");
+const appointmentRoutes = require("./routes/api/appointmentRoutes");
 
 const app = express();
 const port = process.env.PORT || 8080;

@@ -77,9 +77,9 @@ class ProfilesShowcase extends Component {
             sessionStorage.getItem("searchText") === null
             ? ""
             : sessionStorage.getItem("searchText").replace(/[""]+/g, ""),
-          filterByPaid: sessionStorage.getItem("filterByPaid") == "true",
+          filterByPaid: sessionStorage.getItem("filterByPaid") === "true",
           filterByVolunteer:
-            sessionStorage.getItem("filterByVolunteer") == "true",
+            sessionStorage.getItem("filterByVolunteer") === "true",
         },
         () => this.runAllFilters()
       );
@@ -668,6 +668,7 @@ class ProfilesShowcase extends Component {
           </Paper>
         </header>
         <div>{profileItems}</div>
+        
       </React.Fragment>
     );
   }

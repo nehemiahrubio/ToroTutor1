@@ -124,7 +124,7 @@ const ProfileItem = (props) => {
                   <CalendarIcon className="icon" />
                 </Grid>
                 <Grid item xs>
-                  <Typography>{truncateText(profile.availability)}</Typography>
+                <Typography>{`${profile.availability.title} - ${profile.availability.start}`}</Typography>
                 </Grid>
               </Grid>
             )}

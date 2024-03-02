@@ -88,13 +88,18 @@ class ProfileAbout extends Component {
               </Grid>
             </Grid>
           )}
-          {profile.availability && (
+          {profile.availability && profile.availability.length > 0 && (
             <Grid container wrap="nowrap" spacing={8}>
               <Grid item>
                 <CalendarIcon className="icon" />
               </Grid>
               <Grid item xs>
-                <Typography>{profile.availability}</Typography>
+                <Typography>
+                  {profile.availability.map((date, index) => (
+                    <span key={index}>{date.start} - {date.end}<br /></span>
+                  ))}
+                  {/* Add logic to open a calendar modal or date picker */}
+                </Typography>
               </Grid>
             </Grid>
           )}

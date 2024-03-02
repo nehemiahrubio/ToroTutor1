@@ -3,6 +3,21 @@ const Schema = mongoose.Schema;
 
 // TODO: add payment or not
 
+const AvailabilitySchema = new Schema({
+  start: {
+    type: Date,
+    required: true,
+  },
+  end: {
+    type: Date,
+    required: true,
+  },
+  title: {
+    type: String,
+    default: "Available",
+  },
+});
+
 const ProfileSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -35,7 +50,8 @@ const ProfileSchema = new Schema({
     default: false,
   },
   availability: {
-    type: String,
+    type: [AvailabilitySchema],
+    default: [],
   },
   date: {
     type: Date,
