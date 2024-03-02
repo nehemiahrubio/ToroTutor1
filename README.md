@@ -1,10 +1,4 @@
-# TutorUP Capstone Application
-
-## [VIDEO DEMO](https://www.youtube.com/watch?v=VgK04kSGTL4&feature=youtu.be)
-
 ## About
-
-University of Portland students can:
 
 1. Login/Register as a user (with a up.edu email)
 2. Create a tutor profile
