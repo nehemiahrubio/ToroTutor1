@@ -109,15 +109,15 @@ const ProfileItem = (props) => {
               </Grid>
             </Grid>
             {profile.bio && (
-              <Grid container wrap="nowrap" spacing={8}>
-                <Grid item>
-                  <InfoIcon className="icon" />
-                </Grid>
-                <Grid item xs>
-                  <Typography>{truncateText(profile.bio)}</Typography>
-                </Grid>
-              </Grid>
-            )}
+  <Grid container wrap="nowrap" spacing={8}>
+    <Grid item>
+      <InfoIcon className="icon" />
+    </Grid>
+    <Grid item xs>
+      <Typography dangerouslySetInnerHTML={{ __html: truncateText(profile.bio).replace(/\n/g, '<br />') }} />
+    </Grid>
+  </Grid>
+)}
             {profile.availability && (
               <Grid container wrap="nowrap" spacing={8}>
                 <Grid item>

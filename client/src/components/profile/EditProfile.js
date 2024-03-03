@@ -479,13 +479,13 @@ handleDeselect = (info) => {
             <Grid item xs={12} sm={6}>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="bio">Short Bio</InputLabel>
-                <Input
-                  type="text"
+                <textarea
                   id="bio"
                   name="bio"
                   value={bio}
-                  multiline
-                  fullWidth
+                  rows={4}
+                  className="textarea"
+                  style={{ marginTop: '48px' }}  // Adjust the top margin as needed
                   onChange={this.onChange}
                 />
               </FormControl>
@@ -513,15 +513,15 @@ handleDeselect = (info) => {
         <div>
           <h2>Availability Calendar</h2>
           <FullCalendar
-  plugins={[dayGridPlugin, interactionPlugin]}
-  initialView="dayGridMonth"
-  events={events}
-  editable={true}
-  eventResizableFromStart={true}
-  selectable={true}
-  selectMirror={true}
-  select={(info) => this.handleSlotSelect(info)}
-/>
+            plugins={[dayGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            events={events}
+            editable={true}
+            eventResizableFromStart={true}
+            selectable={true}
+            selectMirror={true}
+            select={(info) => this.handleSlotSelect(info)}
+          />
           <Button
             variant="outlined"
             color="primary"

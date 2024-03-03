@@ -79,15 +79,15 @@ class ProfileAbout extends Component {
             </Grid>
           </Grid>
           {profile.bio && (
-            <Grid container wrap="nowrap" spacing={8}>
-              <Grid item>
-                <InfoIcon className="icon" />
-              </Grid>
-              <Grid item xs>
-                <Typography>{profile.bio}</Typography>
-              </Grid>
-            </Grid>
-          )}
+  <Grid container wrap="nowrap" spacing={8}>
+    <Grid item>
+      <InfoIcon className="icon" />
+    </Grid>
+    <Grid item xs>
+      <Typography dangerouslySetInnerHTML={{ __html: profile.bio.replace(/\n/g, '<br />') }} />
+    </Grid>
+  </Grid>
+)}
           {profile.availability && profile.availability.length > 0 && (
             <Grid container wrap="nowrap" spacing={8}>
               <Grid item>

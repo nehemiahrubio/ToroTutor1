@@ -16,7 +16,8 @@ import _ from "lodash";
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: "#5E9CAE",
+    //backgroundColor: "#5E9CAE",
+    backgroundColor: "#800020", // Burgundy Red
     color: "#fff",
     fontWeight: "bold",
   },

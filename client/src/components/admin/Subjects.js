@@ -31,7 +31,7 @@ const styles = (theme) => ({
     backgroundColor: "#1E1656",
   },
   purpleText: {
-    color: "#1E1656",
+    color: "#1E1656",   
   },
   media: {
     objectFit: "cover",
@@ -50,6 +50,7 @@ class Subjects extends Component {
           component="h1"
           align="center"
           className="editHeading"
+          style={{ borderBottom: '7px solid #800020' }}
         >
           Subjects
         </Typography>

@@ -2,7 +2,8 @@
 	margin-right: 10px;
 	margin-bottom: 10px;
 	border-color: #5E9CAE !important;
-	background-color: #5E9CAE !important;
+	/*background-color: #5E9CAE !important;*/
+	background-color: #808080 !important;
 	color: #fff !important;
 	font-weight: 500 !important;
 }
@@ -85,7 +86,8 @@
 .purpleAvatar {
     margin: 10px;
     color: #ffffff !important;
-    background-color: #1E1656 !important;
+    /*background-color: #1E1656 !important;*/
+	background-color: #800020 !important;
 }
 
 .blueAvatar {
@@ -99,7 +101,8 @@
 }
 
 .colorBlue {
-	color: #5E9CAE !important;
+	/*color: #5E9CAE !important;*/
+	color: #bdbdbd !important;
 }
 
 .backgroundPurple {
@@ -107,7 +110,8 @@
 }
 
 .backgroundBlue {
-	background-color: #5E9CAE !important;
+	/*background-color: #5E9CAE !important;*/
+	background-color: #bdbdbd !important;
 }
 
 .purpleSubmit {
@@ -157,5 +161,6 @@ img {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  user-drag: none;
+  /*user-drag: none;*/
+  user-select: none;
 }
